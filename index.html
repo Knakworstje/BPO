@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPO</title>
+</head>
+<body>
+    <title>BPO</title>
+    <h1 id="zender">Zender</h1>
+    <video id="play" src=""></video><br><br>
+    <button id="next"></button><br><br>
+    <button id="previous"></button>
+
+    <script>
+        let zender_header = document.getElementById("zender");
+        let zenders = ["bananenTV"];
+        let video_names = [];
+        let zender = 0;
+        let video = 0;
+        let video_box = document.getElementById("play");
+
+        let previous = document.getElementById("previous");
+        let next = document.getElementById("next");
+
+        function nextZender() {
+            zender = zender + 1
+            video = 0;
+            if (zender > zender.length - 1) {
+                zender = 0;
+            }
+        }
+
+        function previousZender() {
+            zender = zender - 1;
+            video = 0;
+            if (zender < 0) {
+                zender = 0;
+            }
+        }
+
+        video_box.addEventListener('ended', videoEnded);
+
+        // Function to handle the video end event
+        function videoEnded() {
+            console.log('The video has finished playing');
+            video += 1;
+            if (fetchVideoCount(zender) < video + 1) {
+                video = 0;
+            }
+            video_box.src = "./zenders/" + zenders[zender] + "/" + video_names[video] + ".mkv";
+        }
+
+        function fetchVideoCount(zender) {
+            fetch("./zenders/" + zenders[zender] + "/")
+            .then(response => response.json())
+            .then(data => {
+            const itemCount = data.length;
+            console.log(`The folder contains ${itemCount} items.`);
+            return itemCount;
+            })
+            .catch(error => {
+            console.error('Error fetching folder items:', error);
+            });
+        }
+
+        function fetchVideos() {
+            for (zender_name in zenders) {
+                fetch("./zenders/" + zender_name + "/")
+                .then(response => response.json())
+                .then(data => {
+                    video_names.push(data.map(item => item.name));
+                })
+                .catch(error => {
+                    console.error('Error fetching folder items:', error);
+                });
+            }
+        }
+
+        document.addEventListener("click", () => {
+            video_box.play();
+        });
+
+        videoEnded();
+    </script>
+</body>
+</html>

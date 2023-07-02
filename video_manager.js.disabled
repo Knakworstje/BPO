@@ -1,0 +1,35 @@
+let zender_header = document.getElementById("zender");
+let zenders = ["bananenTV"];
+let zender = 0;
+let video = 0;
+let video_box = document.getElementById("play");
+
+let previous = document.getElementById("previous");
+let next = document.getElementById("next");
+
+function nextZender() {
+    zender = zender + 1
+    video = 0;
+    if (zender > zender.length - 1) {
+        zender = 0;
+    }
+}
+
+function previousZender() {
+    zender = zender - 1;
+    video = 0;
+    if (zender < 0) {
+        zender = 0;
+    }
+}
+
+video_box.addEventListener('ended', videoEnded);
+
+// Function to handle the video end event
+function videoEnded() {
+  console.log('The video has finished playing');
+  video_box.src = "./zenders/" + zenders[zender] + "/" + video + ".mp4";
+  video_box.play();
+}
+
+videoEnded();
